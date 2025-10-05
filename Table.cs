@@ -8,6 +8,10 @@ internal struct Table
 
     internal Table(string name, int length, int width, int price)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(length);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width);
+        ArgumentOutOfRangeException.ThrowIfNegative(price);
         Name = name;
         Length = length;
         Width = width;
