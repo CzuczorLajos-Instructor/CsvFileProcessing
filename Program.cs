@@ -25,7 +25,9 @@ internal class Program
 
     private static void Query(List<Table> tables)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"2. : A fájlban {tables.Count} asztal adatai szerepelnek (amelyek értelmezhetők voltak)");
+        Console.WriteLine($"3. : XXX olyan asztal van, amelyeknek a hosszuk kisebb, mint a szélességük");
+        // TODO add the remaining queries here
     }
 
     //**********************************************************************************
@@ -33,11 +35,73 @@ internal class Program
     //
     private static List<Table> ReadTableData0(string dataFile, out List<string> invalidLines)
     {
-        throw new NotImplementedException();
+        List<Table> data = new();
+        invalidLines = new();
+        using StreamReader reader = new(dataFile);
+        reader.ReadLine(); // skip header line
+        while (!reader.EndOfStream)
+        {
+            string line = reader.ReadLine() ?? "";
+            try
+            {
+                Table table = new(line);
+                data.Add(table);
+            }
+            catch (Exception)
+            {
+                invalidLines.Add(line);
+            }
+        }
+        return data;
     }
 
     //**********************************************************************************
     // Query table data
     //
+    int CountTablesWithWeirdDimensions(List<Table> tables)
+    {
+        int count = 0;
+        foreach (var table in tables)
+        {
+            if (table.Length < table.Width) { count++; }
+        }
+        return count;
+    }
 
+    (int, int) CountTablesWithMinMaxArea(List<Table> tables)
+    {
+        int minArea = int.MaxValue;
+        int maxArea = int.MinValue;
+        foreach (var table in tables)
+        {
+            minArea = Math.Min(minArea, table.Area());
+            maxArea = Math.Max(maxArea, table.Area());
+        }
+        return (minArea, maxArea);
+    }
+
+    int CountTablesWhithAreaGreaterThanTreshold(List<Table> tables, int treshold)
+    {
+        int count = 0;
+        foreach (var table in tables)
+        {
+            if (table.Area() > treshold) { count++; }
+        }
+        return count;
+    }
+
+    int CalculateTotalPrice(List<Table> tables, IEnumerable<char> namePrefixes)
+    {
+        int totalPrice = 0;
+        foreach (var table in tables)
+        {
+            if (namePrefixes.Contains(table.Name[0])) { totalPrice += table.Price; }
+        }
+        return totalPrice;
+    }
+
+    static int CalculateTotalArea(List<Table> tables, string nameSuffix, int priceThreshold)
+    {
+        return 0; // TODO implement this method
+    }
 }
