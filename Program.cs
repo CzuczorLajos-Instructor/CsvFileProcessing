@@ -27,7 +27,21 @@ internal class Program
     {
         Console.WriteLine($"2. : A fájlban {tables.Count} asztal adatai szerepelnek (amelyek értelmezhetők voltak)");
         Console.WriteLine($"3. : XXX olyan asztal van, amelyeknek a hosszuk kisebb, mint a szélességük");
-        // TODO add the remaining queries here
+
+        // TODO replace XXX with the actual values in the following lines
+        (int minArea, int maxArea) = 0; // TODO call the method that calculates min and max area
+        Console.WriteLine($"4. : A legkisebb felszínű asztal felszíne {minArea:N0}, a legnagyobbé pedig {maxArea:N0}.");
+        double areaThresholdRatio = 0.8; // 80%
+        Console.WriteLine($"5. : XXX olyan asztal van, " +
+            $"amely(ek) lapjának felszíne meghaladja a legnagyobb asztallap felszínének {areaThresholdRatio:P0}-át.");
+        Console.WriteLine($"6. : Azon asztalok összesített ára XXX egység, " +
+            $"amelyekhez I-vel vagy Í-vel kezdődő nevek tartoznak.");
+        int priceThreshold = 50000;
+        Console.WriteLine($"7. : Azon asztalok teljes felszíne XXX, " +
+            $"amelyekhez a-ra végződő nevek tartoznak és az áruk meghaladja a(z) {priceThreshold:N0} egységet.");
+        double ratioThreshold = 2.5;
+        Console.WriteLine($"8. : XXX olyan asztal van, amelyek hossza legalább {ratioThreshold:F1}-szerese a szélességének.");
+        Console.WriteLine($"9. : Az asztalok átlagára XXX egység.");
     }
 
     //**********************************************************************************
