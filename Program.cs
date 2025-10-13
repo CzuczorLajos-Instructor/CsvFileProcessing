@@ -75,7 +75,7 @@ internal class Program
     //**********************************************************************************
     // Query table data
     //
-    int CountTablesWithWeirdDimensions(List<Table> tables)
+    static int CountTablesWithWeirdDimensions(List<Table> tables)
     {
         int count = 0;
         foreach (var table in tables)
@@ -85,19 +85,19 @@ internal class Program
         return count;
     }
 
-    (int, int) CountTablesWithMinMaxArea(List<Table> tables)
+    static (int, int) CalculateTablesMinMaxArea(List<Table> tables)
     {
         int minArea = int.MaxValue;
         int maxArea = int.MinValue;
         foreach (var table in tables)
         {
-            minArea = Math.Min(minArea, table.Area());
-            maxArea = Math.Max(maxArea, table.Area());
+            if (table.Area() < minArea) minArea = table.Area();
+            if (table.Area() > maxArea) maxArea = table.Area();
         }
         return (minArea, maxArea);
     }
 
-    int CountTablesWhithAreaGreaterThanTreshold(List<Table> tables, int treshold)
+    static int CountTablesWhithAreaGreaterThan(List<Table> tables, int treshold)
     {
         int count = 0;
         foreach (var table in tables)
@@ -107,13 +107,15 @@ internal class Program
         return count;
     }
 
-    
-    int CalculateTotalPrice(List<Table> tables, char[] namePrefixes)
+    static int CalculateTotalPrice(List<Table> tables, char[] namePrefixes)
     {
         int totalPrice = 0;
         foreach (var table in tables)
         {
-            if (namePrefixes.Contains(table.Name[0])) { totalPrice += table.Price; }
+            if (namePrefixes.Contains(table.Name[0]))
+            {
+                totalPrice = totalPrice + table.Price;
+            }
         }
         return totalPrice;
     }
