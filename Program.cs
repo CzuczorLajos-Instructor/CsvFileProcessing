@@ -26,13 +26,13 @@ internal class Program
     private static void Query(List<Table> tables)
     {
         Console.WriteLine($"2. : A fájlban {tables.Count} asztal adatai szerepelnek (amelyek értelmezhetők voltak)");
-        Console.WriteLine($"3. : XXX olyan asztal van, amelyeknek a hosszuk kisebb, mint a szélességük");
+        Console.WriteLine($"3. : {CountTablesWithWeirdDimensions(tables):N0} olyan asztal van, amelyeknek a hosszuk kisebb, mint a szélességük");
 
         // TODO replace XXX with the actual values in the following lines
-        (int minArea, int maxArea) = (0, 0); // TODO replace with actual method call
+        (int minArea, int maxArea) = CalculateTablesMinMaxArea(tables);
         Console.WriteLine($"4. : A legkisebb felszínű asztal [lapjának] felszíne {minArea:N0}, a legnagyobbé pedig {maxArea:N0}.");
         double areaRatioThreshold = 0.8;
-        Console.WriteLine($"5. : XXX olyan asztal van, " +
+        Console.WriteLine($"5. : {CountTablesWhithAreaGreaterThan(tables, (int)areaRatioThreshold * maxArea)} olyan asztal van, " +
             $"amely(ek) lapjának felszíne meghaladja a legnagyobb asztallap felszínének {areaRatioThreshold:P0}-át.");
         char[] namePrefixes = { 'I', 'Í' };
         Console.WriteLine($"6. : Azon asztalok összesített ára XXX egység, " +
@@ -89,20 +89,22 @@ internal class Program
     {
         int minArea = int.MaxValue;
         int maxArea = int.MinValue;
-        foreach (var table in tables)
+        foreach (Table table in tables)
         {
-            if (table.Area() < minArea) minArea = table.Area();
-            if (table.Area() > maxArea) maxArea = table.Area();
+            //if (table.Area() < minArea) minArea = table.Area();
+            //if (table.Area() > maxArea) maxArea = table.Area();
+            minArea = Math.Min(minArea, table.Area());
+            maxArea = Math.Max(maxArea, table.Area());
         }
         return (minArea, maxArea);
     }
 
-    static int CountTablesWhithAreaGreaterThan(List<Table> tables, int treshold)
+    static int CountTablesWhithAreaGreaterThan(List<Table> tables, int areaThreshold)
     {
         int count = 0;
         foreach (var table in tables)
         {
-            if (table.Area() > treshold) { count++; }
+            if (table.Area() > areaThreshold) { count++; }
         }
         return count;
     }
@@ -114,7 +116,7 @@ internal class Program
         {
             if (namePrefixes.Contains(table.Name[0]))
             {
-                totalPrice = totalPrice + table.Price;
+                totalPrice += table.Price;
             }
         }
         return totalPrice;
@@ -122,6 +124,35 @@ internal class Program
 
     static int CalculateTotalArea(List<Table> tables, char nameSuffix, int priceThreshold)
     {
-        return 0; // TODO implement this method
+        int totalArea = 0;
+        foreach (var table in tables)
+        {
+            if (table.Name.EndsWith(nameSuffix) && table.Price > priceThreshold)
+            {
+                totalArea += table.Area();
+            }
+        }
+        return totalArea;
+    }
+
+    static int CountTablesWithExtremeSizeRatio(List<Table> tables, double sizeRatioThreshold)
+    {
+        int count = 0;
+        foreach (var table in tables)
+        {
+            if ((double)table.Length / table.Width >= sizeRatioThreshold) { count++; }
+        }
+        return count;
+    }
+
+    static double CalculateAveragePrice(List<Table> tables)
+    {
+        if (tables.Count == 0) return 0.0;
+        int totalPrice = 0;
+        foreach (var table in tables)
+        {
+            totalPrice += table.Price;
+        }
+        return (double)totalPrice / tables.Count;
     }
 }
