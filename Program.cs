@@ -25,26 +25,26 @@ internal class Program
 
     private static void Query(List<Table> tables)
     {
-        Console.WriteLine($"2. : A fájlban {tables.Count} asztal adatai szerepelnek (amelyek értelmezhetők voltak)");
-        Console.WriteLine($"3. : {CountTablesWithWeirdDimensions(tables):N0} olyan asztal van, amelyeknek a hosszuk kisebb, mint a szélességük");
+        Console.WriteLine($"2. : A fájlban {tables.Count} asztal adatai szerepelnek (amelyek értelmezhetők voltak).");
+        Console.WriteLine($"3. : {CountTablesWithWeirdDimensions(tables):N0} olyan asztal van, amelyeknek a hosszuk kisebb, mint a szélességük.");
 
         // TODO replace XXX with the actual values in the following lines
         (int minArea, int maxArea) = CalculateTablesMinMaxArea(tables);
         Console.WriteLine($"4. : A legkisebb felszínű asztal [lapjának] felszíne {minArea:N0}, a legnagyobbé pedig {maxArea:N0}.");
         double areaRatioThreshold = 0.8;
-        Console.WriteLine($"5. : {CountTablesWhithAreaGreaterThan(tables, (int)areaRatioThreshold * maxArea)} olyan asztal van, " +
+        Console.WriteLine($"5. : {CountTablesWhithAreaGreaterThan(tables, (int)(areaRatioThreshold * maxArea))} olyan asztal van, " +
             $"amely(ek) lapjának felszíne meghaladja a legnagyobb asztallap felszínének {areaRatioThreshold:P0}-át.");
         char[] namePrefixes = { 'I', 'Í' };
-        Console.WriteLine($"6. : Azon asztalok összesített ára XXX egység, " +
-            $"amelyekhez {string.Join(" vagy ", namePrefixes)} betűkkel kezdődő nevek tartoznak");
+        Console.WriteLine($"6. : Azon asztalok összesített ára {CalculateTotalPrice(tables, namePrefixes):N0} egység, " +
+            $"amelyekhez {string.Join(" vagy ", namePrefixes)} betűkkel kezdődő nevek tartoznak.");
         char suffix = 'a';
         int priceThreshold = 50000;
         Console.WriteLine($"7. : Azon asztalok teljes felszíne {CalculateTotalArea(tables, suffix, priceThreshold):N0}, " +
             $"amelyekhez {suffix} betűre végződő nevek tartoznak és az áruk meghaladja a(z) {priceThreshold:N0} egységet.");
         double sizeRatioThreshold = 2.5;
-        Console.WriteLine($"8. : XXX olyan asztal van, amelyek hossza" +
+        Console.WriteLine($"8. : {CountTablesWithExtremeSizeRatio(tables, sizeRatioThreshold)} olyan asztal van, amelyek hossza." +
             $" legalább {sizeRatioThreshold:F1}-szerese a szélességének.");
-        Console.WriteLine($"9. : Az asztalok átlagára XXX egység.");
+        Console.WriteLine($"9. : Az asztalok átlagára {CalculateAveragePrice(tables)} egység.");
     }
 
     //**********************************************************************************
@@ -55,19 +55,10 @@ internal class Program
         List<Table> data = new();
         invalidLines = new();
         using StreamReader reader = new(dataFile);
-        reader.ReadLine(); // skip header line
-        while (!reader.EndOfStream)
+        for (string? line = reader.ReadLine(); (line = reader.ReadLine()) != null;) // skip header line
         {
-            string line = reader.ReadLine() ?? "";
-            try
-            {
-                Table table = new(line);
-                data.Add(table);
-            }
-            catch (Exception)
-            {
-                invalidLines.Add(line);
-            }
+            try { data.Add(new Table(line)); }
+            catch (Exception) { invalidLines.Add(line); }
         }
         return data;
     }
